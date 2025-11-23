@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Treinamento Shopee Lucrativo | Premium & Profissional</title>
-    <!-- Carregamento do Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuração do Tailwind para usar a paleta de cores e a fonte Inter -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
@@ -17,6 +15,7 @@
             --primary-orange: #FF5722; /* Laranja Shopee */
             --secondary-orange: #FF6A00; /* Laranja vibrante (brilho) */
             --text-white: #E5E5E5; /* Branco suave para texto */
+            --negative-red: #C0392B; /* Vermelho para o 'Para Quem Não É' */
         }
 
         body {
@@ -24,6 +23,7 @@
             background-color: var(--bg-dark);
             color: var(--text-white);
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         /* ====================================================
@@ -37,13 +37,13 @@
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 25px var(--secondary-orange); /* Sombra suave + Glow */
             transition: all 0.3s ease;
-            overflow: hidden; /* Necessário para o efeito de reflexo */
+            overflow: hidden;
         }
         
         .btn-glass:hover {
             background-color: rgba(255, 87, 34, 0.3);
             box-shadow: 0 6px 40px rgba(0, 0, 0, 0.4), 0 0 35px var(--secondary-orange);
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.02); /* Micro-interação de levitação */
         }
         
         /* Efeito de reflexo de luz animado */
@@ -67,20 +67,6 @@
         }
 
         /* ====================================================
-        Animação da Seta de Rolagem
-        ====================================================
-        */
-        .scroll-arrow {
-            animation: bounce-arrow 1.5s infinite;
-        }
-
-        @keyframes bounce-arrow {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-
-        /* ====================================================
         Efeito de Scroll Reveal (Entrada de Elementos)
         ====================================================
         */
@@ -96,47 +82,33 @@
         }
 
         /* ====================================================
-        Estilização do Card de Prova Social
+        Estilização do Card (Hover Levitação e Glow)
         ====================================================
         */
-        .social-card {
+        .premium-card {
             background-color: var(--soft-dark);
-            transition: all 0.3s ease-in-out;
-            border: 2px solid transparent;
-            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .social-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 106, 0, 0.3), 0 0 15px var(--primary-orange);
-            border-color: var(--secondary-orange);
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 45px rgba(255, 87, 34, 0.2);
+            border-color: var(--primary-orange);
         }
 
-        .social-card .play-overlay {
-            background-color: rgba(0, 0, 0, 0.5); /* Overlay escuro */
-            transition: background-color 0.3s;
-        }
-
-        .social-card:hover .play-overlay {
-             background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        /* Classe para o logo Shopee estilizado */
-        .shopee-logo-text {
-            color: var(--primary-orange);
-            text-shadow: 0 0 5px var(--secondary-orange);
-        }
-
-        /* Estilo da Seção Hero para o Fade Parallax */
-        #hero-image-container {
-            z-index: 10;
+        /* Estilo para a resposta do FAQ (Acordeão) */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out; /* Transição suave */
+            padding: 0 1.5rem;
         }
     </style>
 </head>
 
 <body class="bg-dark min-h-screen">
 
-    <!-- Script de Inicialização e Lógica JS -->
     <script type="text/javascript">
         // Link de compra
         const purchaseLink = "https://pay.cakto.com.br/5ftikw9_314865?affiliate=aHUMWqiw";
@@ -170,7 +142,8 @@
             // 2. Hero Image Fade-out (Parallax Suave)
             const heroImageContainer = document.getElementById('hero-image-container');
             const arrowContainer = document.getElementById('scroll-arrow-container');
-            const heroHeight = document.getElementById('hero-section').offsetHeight;
+            const heroSection = document.getElementById('hero-section');
+            const heroHeight = heroSection ? heroSection.offsetHeight : 800;
 
             const handleScroll = () => {
                 const scrollY = window.scrollY;
@@ -189,63 +162,91 @@
             };
 
             window.addEventListener('scroll', handleScroll);
+
+
+            // 3. Lógica do Acordeão FAQ (Novo Requisito)
+            const setupFAQAccordion = () => {
+                document.querySelectorAll('.faq-toggle').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const item = button.closest('.faq-item');
+                        const answer = item.querySelector('.faq-answer');
+                        const icon = item.querySelector('.faq-icon');
+                        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                        if (isExpanded) {
+                            // Colapsar
+                            answer.style.maxHeight = '0';
+                            button.setAttribute('aria-expanded', 'false');
+                            icon.classList.remove('rotate-45');
+                        } else {
+                            // Expandir, primeiro colapsa os outros para manter a experiência limpa
+                            document.querySelectorAll('.faq-toggle').forEach(otherButton => {
+                                if (otherButton !== button) {
+                                    const otherItem = otherButton.closest('.faq-item');
+                                    const otherAnswer = otherItem.querySelector('.faq-answer');
+                                    const otherIcon = otherItem.querySelector('.faq-icon');
+
+                                    otherAnswer.style.maxHeight = '0';
+                                    otherButton.setAttribute('aria-expanded', 'false');
+                                    otherIcon.classList.remove('rotate-45');
+                                }
+                            });
+
+                            // Expandir o item atual
+                            // Usa scrollHeight para saber a altura exata do conteúdo e garantir a transição suave
+                            answer.style.maxHeight = answer.scrollHeight + 'px';
+                            button.setAttribute('aria-expanded', 'true');
+                            icon.classList.add('rotate-45');
+                        }
+                    });
+                });
+            };
+
+            setupFAQAccordion();
         });
 
-        // 3. Abrir Vídeo em Nova Aba
+        // 4. Abrir Vídeo em Nova Aba
         function openVideo(url) {
             window.open(url, '_blank');
         }
     </script>
 
 
-    <!-- ===================================================== -->
-    <!-- HERO SECTION (PRIMEIRA DOBRA) -->
-    <!-- ===================================================== -->
     <header id="hero-section" class="relative min-h-[100vh] flex flex-col justify-center items-center pt-20 pb-20 lg:pt-32 lg:pb-32 px-4 overflow-hidden">
         
-        <!-- Contêiner da Imagem (Para o Efeito Fade/Parallax) -->
         <div id="hero-image-container" class="absolute inset-0 w-full h-full flex justify-center items-center transition-opacity duration-300">
-            <!-- Placeholder Imagem shopee1 - Grande e Centralizada -->
             <img 
                 src="shopee1.png" 
                 alt="Visão de Sucesso na Shopee" 
                 class="w-full h-full object-cover object-center absolute opacity-50 transition-transform duration-500 ease-out"
                 style="min-width: 100%; min-height: 100%; filter: blur(3px) brightness(0.6);"
             >
-            <!-- Overlay escuro para garantir contraste com o texto -->
             <div class="absolute inset-0 bg-dark opacity-40"></div>
         </div>
 
 
-        <!-- Conteúdo Principal do Hero (Acima da Imagem) -->
         <div class="relative z-20 text-center max-w-4xl mx-auto space-y-8 scroll-reveal">
             
             <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tighter text-transparent bg-clip-text"
                 style="background-image: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));">
-                A Fórmula Secreta para Escalar Seu Lucro na Shopee</span>
+                A Fórmula Secreta para Escalar Seu Lucro na <span class="shopee-logo-text">Shopee</span>
             </h1>
 
             <p class="text-lg sm:text-xl lg:text-2xl font-light max-w-3xl mx-auto text-gray-300">
-               Chega de conteúdos superficiais. Este é um <strong class="text-primary-orange font-bold">treinamento avançado e validado</strong>, desenvolvido para profissionais que buscam resultados concretos e reconhecimento no marketplace mais lucrativo do Brasil.
+                Chega de conteúdos superficiais. Este é um <strong class="text-primary-orange font-bold">treinamento avançado e validado</strong>, desenvolvido para quem busca resultados concretos no marketplace mais lucrativo do Brasil.
             </p>
 
-            <!-- Botão de Compra (1/3) -->
-            <a href= "https://pay.cakto.com.br/5ftikw9_314865?affiliate=aHUMWqiw" target="_blank" class="inline-block py-4 px-12 mt-6 text-xl font-bold rounded-full btn-glass uppercase tracking-wider shadow-lg transform hover:scale-[1.02] transition duration-300">
+            <a href="#section-value" class="inline-block py-4 px-12 mt-6 text-xl font-bold rounded-full btn-glass uppercase tracking-wider shadow-lg transform hover:scale-[1.02] transition duration-300">
                 QUERO LUCRAR AGORA!
             </a>
 
-            <!-- Preço em Destaque -->
-            <div class="mt-4 text-center text-sm sm:text-lg font-semibold">
-                <p class="text-gray-400">Apenas:</p>
-                <p class="text-2xl sm:text-3xl font-extrabold text-white">
-                    <span class="text-secondary-orange">12x de R$ 17,17 🔥</span>
-                    <span class="text-gray-400 ml-4">|</span>
-                    <span class="ml-4">Ou à vista no <span class="text-primary-orange">Pix por R$ 147,00</span></span>
-                </p>
-            </div>
+            <p class="text-lg text-gray-400 pt-4 font-semibold italic">
+                  +60 Aulas
+• Comunidade Exclusiva
+• Acesso Vitalício
+            </p>
         </div>
 
-        <!-- Seta de Rolagem Animada -->
         <div id="scroll-arrow-container" class="absolute bottom-10 z-30 transition-opacity duration-500">
             <svg class="scroll-arrow w-8 h-8 text-secondary-orange opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -254,87 +255,324 @@
     </header>
 
 
-   <!-- ===================================================== -->
-<!-- SEÇÃO DE BENEFÍCIOS / O QUE VOCÊ VAI APRENDER -->
-<!-- ===================================================== -->
-<section class="py-16 md:py-24 bg-soft-dark border-t border-b border-gray-800 px-4">
-    <div class="container mx-auto max-w-6xl">
-        <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-16 scroll-reveal">
-            O Que Esperar do <span class="text-primary-orange">Método Premium</span>
-        </h2>
+    <section class="py-16 md:py-24 bg-soft-dark border-t border-b border-gray-800 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-16 scroll-reveal">
+                Este Treinamento é Para Você?
+            </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-
-            <!-- Benefício 1 -->
-            <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl bg-gradient-to-br from-[#1F1F1F] to-[#2A2A2A] hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl hover:shadow-3xl scroll-reveal" style="transition-delay: 0.1s;">
-                <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
-                    <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
-                    </svg>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                <div class="p-8 rounded-3xl premium-card scroll-reveal bg-gradient-to-br from-[#2A2A2A] to-[#1A1A1A] hover:border-negative-red" style="transition-delay: 0.1s;">
+                    <div class="flex items-center mb-6">
+                        <svg class="w-10 h-10 text-negative-red mr-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3 class="text-2xl font-bold text-negative-red uppercase tracking-wider">Não é Para Quem:</h3>
+                    </div>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <span class="text-negative-red text-2xl font-black mr-4 leading-none flex-shrink-0">✖</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Busca Dinheiro Rápido e Fácil: Este é um negócio sério que exige aplicação e consistência.
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-negative-red text-2xl font-black mr-4 leading-none flex-shrink-0">✖</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Não Quer Aplicar o que Aprende: O sucesso vem da execução das estratégias validadas, não apenas da posse do curso.
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-negative-red text-2xl font-black mr-4 leading-none flex-shrink-0">✖</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Não Quer se Atualizar: O mercado digital muda. Exigimos quem queira aproveitar as oportunidades de crescimento constante.
+                            </p>
+                        </li>
+                    </ul>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Escala de Vendas Profissional</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Aprenda a otimizar listings, gerenciar estoque de alto volume e implementar estratégias de tráfego pago que realmente convertem na Shopee.
-                    </p>
+
+                <div class="p-8 rounded-3xl premium-card scroll-reveal bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A] hover:border-primary-orange" style="transition-delay: 0.2s;">
+                    <div class="flex items-center mb-6">
+                        <svg class="w-10 h-10 text-primary-orange mr-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.944 12c0 2.853 1.13 5.467 3.055 7.42A13.923 13.923 0 0012 21c2.613 0 5.06-1.144 6.944-3.136a11.955 11.955 0 01-3.04-8.618z"></path>
+                        </svg>
+                        <h3 class="text-2xl font-bold text-secondary-orange uppercase tracking-wider">É Perfeito Para Quem:</h3>
+                    </div>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <span class="text-primary-orange text-2xl font-black mr-4 leading-none flex-shrink-0">✓</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Quer Renda Extra com o Celular: Pessoas que buscam lucrar como afiliado sem sair de casa, usando apenas o dispositivo móvel.
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-primary-orange text-2xl font-black mr-4 leading-none flex-shrink-0">✓</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Busca um Passo a Passo Testado: Para quem precisa de um método validado para começar a lucrar consistentemente.
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-primary-orange text-2xl font-black mr-4 leading-none flex-shrink-0">✓</span>
+                            <p class="text-lg font-medium text-gray-300">
+                                Tem ao Menos 1 Hora no Dia: Pessoas que podem dedicar um tempo mínimo diário para aplicar as estratégias e ver resultados.
+                            </p>
+                        </li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- Benefício 2 -->
-            <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl bg-gradient-to-br from-[#1F1F1F] to-[#2A2A2A] hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl hover:shadow-3xl scroll-reveal" style="transition-delay: 0.2s;">
-                <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
-                    <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.052 3.123 3.424.238L16 11l-.01.01-1.07 3.518-3.414 1.258-3.414-1.258L4.01 11l.01-.01-3.424-.238L1 6.123 3.052 3M12 21h7.5A2.25 2.25 0 0021 18.75V9.75A2.25 2.25 0 0018.75 7.5H12M4.5 9.75h7.5m-7.5 0v11.25m7.5-11.25V9.75m7.5 0V7.5"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Otimização de Lucratividade</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Domine a precificação estratégica, gestão de custos e análise de métricas avançadas para maximizar sua margem e não apenas o seu faturamento.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Benefício 3 -->
-            <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl bg-gradient-to-br from-[#1F1F1F] to-[#2A2A2A] hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl hover:shadow-3xl scroll-reveal" style="transition-delay: 0.3s;">
-                <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
-                    <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.944 12c0 2.853 1.13 5.467 3.055 7.42A13.923 13.923 0 0012 21c2.613 0 5.06-1.144 6.944-3.136a11.955 11.955 0 01-3.04-8.618z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Autoridade e Confiança</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Construa uma marca forte dentro da Shopee, utilizando técnicas de atendimento e pós-venda que transformam clientes em defensores do seu negócio.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Benefício 4 -->
-            <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl bg-gradient-to-br from-[#1F1F1F] to-[#2A2A2A] hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl hover:shadow-3xl scroll-reveal" style="transition-delay: 0.4s;">
-                <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
-                    <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 6-6m-3 12h3V9m-4.5-9h-12a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Foco em Resultados Reais</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Este não é um curso teórico. É um mapa prático, passo a passo, que elimina suposições e foca apenas em ações que geram retorno financeiro concreto.
-                    </p>
-                </div>
-            </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
+    <section id="section-value" class="py-16 md:py-24 bg-bg-dark border-t border-b border-gray-800 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-16 scroll-reveal">
+                Todo o Valor que Você Vai Receber
+            </h2>
 
+            <div class="bg-soft-dark p-6 sm:p-10 rounded-3xl shadow-2xl scroll-reveal border border-gray-700">
+                <ul class="space-y-6">
+                    <li class="flex justify-between items-center pb-4 border-b border-gray-700">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-primary-orange mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                            <span class="text-xl font-semibold">8 Módulos com + de 60 aulas</span>
+                        </div>
+                        <span class="text-xl font-bold text-gray-400">R$697,00</span>
+                    </li>
 
-    <!-- ===================================================== -->
-    <!-- SEÇÃO SOBRE A CRIADORA -->
-    <!-- ===================================================== -->
-    <section class="py-16 md:py-24 px-4">
+                    <li class="flex justify-between items-center pb-4 border-b border-gray-700">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-secondary-orange mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 01-9.288 0M5 18V10a6 6 0 0112 0v8a2 2 0 002 2h3a2 2 0 002-2v-8a8 8 0 00-16 0v8a2 2 0 002 2h3z"></path></svg>
+                            <span class="text-xl font-semibold">Comunidade VIP de Alunos</span>
+                        </div>
+                        <span class="text-xl font-bold text-gray-400">R$197,00</span>
+                    </li>
+
+                    <li class="flex justify-between items-center pb-4 border-b border-gray-700">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-primary-orange mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m-7.071 7.071l-3.536 3.536M9.172 10.828a4 4 0 10-5.657 5.657l4.343-4.343m6.614-6.614l4.343-4.343a4 4 0 10-5.657 5.657l-4.343 4.343z"></path></svg>
+                            <span class="text-xl font-semibold">Suporte com Monitora disponível</span>
+                        </div>
+                        <span class="text-xl font-bold text-gray-400">R$197,00</span>
+                    </li>
+
+                    <li class="flex justify-between items-center pb-4">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-secondary-orange mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 12h2m10 0h2M3 12h2m10 0h2m-4.5 9l4.5-4.5M3 3l4.5 4.5m-4.5 13.5l4.5-4.5m13.5 4.5l-4.5-4.5"></path></svg>
+                            <span class="text-xl font-semibold">Bônus: Aula de como Vender mais com IA</span>
+                        </div>
+                        <span class="text-xl font-bold text-gray-400">R$297,00</span>
+                    </li>
+                </ul>
+
+                <div class="mt-8 pt-8 border-t-4 border-dashed border-gray-700">
+                    <div class="flex justify-between items-end">
+                        <p class="text-2xl font-semibold uppercase text-gray-500">Valor Total Estimado</p>
+                        <p class="text-4xl font-black text-negative-red line-through">R$1.388,00</p>
+                    </div>
+
+                    <div class="text-center mt-6 p-4 rounded-xl bg-primary-orange bg-opacity-10 border border-primary-orange shadow-lg">
+                        <p class="text-2xl sm:text-3xl font-extrabold mb-1 text-white">
+                            Você não vai pagar R$1.388,00!
+                        </p>
+                        <p class="text-4xl sm:text-5xl font-black text-secondary-orange">
+                            APENAS <span class="text-6xl sm:text-7xl">R$147,00</span> À VISTA
+                        </p>
+                        <p class="text-xl font-bold text-gray-200 mt-2">
+                            ou 12x de R$ 17,17 🔥
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 scroll-reveal" style="transition-delay: 0.3s;">
+                <a href="https://pay.cakto.com.br/5ftikw9_314865?affiliate=aHUMWqiw" target="_blank" class="inline-block w-full sm:w-auto py-5 px-16 text-2xl font-black rounded-full btn-glass uppercase tracking-wider shadow-lg">
+                    QUERO O DESCONTO DE LANÇAMENTO
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq-section" class="py-16 md:py-24 bg-soft-dark border-t border-b border-gray-800 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-16 scroll-reveal">
+                Perguntas Frequentes
+            </h2>
+
+            <div class="space-y-6">
+
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.1s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">Sou iniciante, o treinamento lucre com shopee funciona para mim?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Sim, o curso é estruturado para levar do zero ao avançado. O primeiro módulo cobre todas as bases essenciais, desde a criação da conta até as primeiras vendas, permitindo que iniciantes consigam lucrar de forma rápida e segura.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.2s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">Quanto tempo preciso dedicar ao curso?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Recomendamos dedicar pelo menos 1 hora por dia para assistir às aulas e aplicar as estratégias. A beleza deste método é a flexibilidade, permitindo que você aprenda e trabalhe no seu próprio ritmo, conciliando com sua rotina.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.3s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">O curso é 100% online?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Sim! Todo o conteúdo é digital, hospedado em uma plataforma exclusiva, acessível a qualquer hora, de qualquer lugar, por computador, tablet ou celular.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.4s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">E se eu não gostar do curso?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Você tem 7 dias de garantia incondicional. Se por qualquer motivo você não se sentir satisfeito, basta solicitar o reembolso integral dentro desse período. Seu investimento está 100% protegido.
+                        </p>
+                    </div>
+                </div>
+
+                 <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.5s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">Consigo ter resultado sem dinheiro para investir?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Sim! O treinamento foca no modelo de afiliado na Shopee, onde você não precisa ter estoque. Apenas o seu tempo e aplicação do método são necessários para começar a lucrar.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.6s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">Eu vou ter suporte, caso precise?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Com certeza! Além da nossa comunidade onde as alunas poderão tirar dúvida e trocar informações, todos alunos terão suporte por email e por whatsapp para sanar qualquer dúvida.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item rounded-xl bg-bg-dark shadow-xl overflow-hidden premium-card scroll-reveal" style="transition-delay: 0.7s;">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left focus:outline-none" aria-expanded="false">
+                        <span class="text-lg sm:text-xl font-bold text-white">Tenho acesso vitalício ao curso?</span>
+                        <svg class="faq-icon w-6 h-6 text-primary-orange transform transition-transform duration-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base text-gray-400 pb-6 leading-relaxed">
+                            Sim, o acesso é vitalício. Você poderá revisar o conteúdo sempre que precisar.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-24 bg-soft-dark border-t border-b border-gray-800 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-16 scroll-reveal">
+                O Que Esperar do <span class="text-primary-orange">Método Premium</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+
+                <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl premium-card hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl scroll-reveal" style="transition-delay: 0.1s;">
+                    <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Escala de Vendas Profissional</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Aprenda a otimizar listings, gerenciar estoque de alto volume e implementar estratégias de tráfego pago que realmente convertem na Shopee.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl premium-card hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl scroll-reveal" style="transition-delay: 0.2s;">
+                    <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.052 3.123 3.424.238L16 11l-.01.01-1.07 3.518-3.414 1.258-3.414-1.258L4.01 11l.01-.01-3.424-.238L1 6.123 3.052 3M12 21h7.5A2.25 2.25 0 0021 18.75V9.75A2.25 2.25 0 0018.75 7.5H12M4.5 9.75h7.5m-7.5 0v11.25m7.5-11.25V9.75m7.5 0V7.5"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Otimização de Lucratividade</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Domine a precificação estratégica, gestão de custos e análise de métricas avançadas para maximizar sua margem e não apenas o seu faturamento.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl premium-card hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl scroll-reveal" style="transition-delay: 0.3s;">
+                    <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.944 12c0 2.853 1.13 5.467 3.055 7.42A13.923 13.923 0 0012 21c2.613 0 5.06-1.144 6.944-3.136a11.955 11.955 0 01-3.04-8.618z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Autoridade e Confiança</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Construa uma marca forte dentro da Shopee, utilizando técnicas de atendimento e pós-venda que transformam clientes em defensores do seu negócio.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 p-8 rounded-3xl premium-card hover:from-[#2C1F1F] hover:to-[#442A18] transition-all duration-500 shadow-2xl scroll-reveal" style="transition-delay: 0.4s;">
+                    <div class="flex-shrink-0 p-5 rounded-full bg-gradient-to-br from-primary-orange to-secondary-orange shadow-xl transform hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-bg-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 6-6m-3 12h3V9m-4.5-9h-12a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-secondary-orange">Foco em Resultados Reais</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Este não é um curso teórico. É um mapa prático, passo a passo, que elimina suposições e foca apenas em ações que geram retorno financeiro concreto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-24 px-4 bg-bg-dark">
         <div class="container mx-auto max-w-6xl">
             <h2 class="text-3xl md:text-5xl font-bold text-center mb-16 scroll-reveal">
                 Sua Mentora: <span class="text-primary-orange">Andressa Barbosa</span>
@@ -342,7 +580,6 @@
 
             <div class="flex flex-col lg:flex-row items-center bg-soft-dark rounded-3xl p-8 lg:p-12 shadow-2xl border border-gray-800 scroll-reveal">
                 
-                <!-- Foto da Criadora (foto1) -->
                 <div class="lg:w-1/3 mb-8 lg:mb-0 lg:mr-12 flex-shrink-0">
                     <img 
                         src="foto1.jpg" 
@@ -352,7 +589,6 @@
                     >
                 </div>
 
-                <!-- Texto de Autoridade -->
                 <div class="lg:w-2/3 space-y-6">
                     <p class="text-lg md:text-xl font-light text-gray-300">
                         Andressa Barbosa é reconhecida por sua trajetória de sucesso e resultados exponenciais na Shopee. Ela transformou o que muitos veem como um 'bico' em um negócio de alta performance, e agora, ela vai te guiar pelo caminho exato que trilhou. 
@@ -361,8 +597,8 @@
                         <span class="text-primary-orange">Profissionalismo e Seriedade:</span> A metodologia deste treinamento foi desenhada para eliminar o amadorismo e focar na construção de um negócio escalável, sólido e duradouro no marketplace.
                     </p>
                     <a href="https://www.instagram.com/andressavbarbosa?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
-                       target="_blank" 
-                       class="inline-block text-lg font-semibold text-secondary-orange hover:text-primary-orange transition duration-300 border-b border-primary-orange hover:border-secondary-orange pb-0.5">
+                        target="_blank" 
+                        class="inline-block text-lg font-semibold text-secondary-orange hover:text-primary-orange transition duration-300 border-b border-primary-orange hover:border-secondary-orange pb-0.5">
                         Siga-a no Instagram: @andressavbarbosa
                     </a>
                 </div>
@@ -370,85 +606,75 @@
         </div>
     </section>
 
-  <!-- ===================================================== -->
-<!-- SEÇÃO PROVA SOCIAL (CORRIGIDA) -->
-<!-- ===================================================== -->
-<section class="py-16 md:py-24 bg-bg-dark px-4 border-t border-gray-800">
-    <div class="container mx-auto max-w-6xl">
-        <h2 class="text-3xl md:text-5xl font-bold text-center mb-12 scroll-reveal">
-            Resultados Reais: <span class="text-primary-orange">Veja Quem Já Está Lucrando</span>
-        </h2>
+    <section class="py-16 md:py-24 bg-bg-dark px-4 border-t border-gray-800">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-12 scroll-reveal">
+                Resultados Reais: <span class="text-primary-orange">Veja Quem Já Está Lucrando</span>
+            </h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
 
-            <!-- Card 1 -->
-            <div class="social-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
-                onclick="openVideo('https://www.youtube.com/watch?v=sEpfN3LHtPI')" style="transition-delay: 0.1s;">
-                <div class="relative">
-                    <img src="https://img.youtube.com/vi/sEpfN3LHtPI/maxresdefault.jpg"
-                        alt="Depoimento 1" class="w-full h-auto object-cover">
+                <div class="premium-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
+                    onclick="openVideo('https://www.youtube.com/watch?v=sEpfN3LHtPI')" style="transition-delay: 0.1s;">
+                    <div class="relative">
+                        <img src="https://img.youtube.com/vi/sEpfN3LHtPI/maxresdefault.jpg"
+                            alt="Depoimento 1" class="w-full h-auto object-cover">
 
-                    <div class="play-overlay absolute inset-0 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 3v18l14-9L6 3z"></path>
-                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 hover:bg-opacity-60 transition-all duration-300">
+                            <svg class="w-16 h-16 text-white bg-primary-orange rounded-full p-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 3v18l14-9L6 3z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="social-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
-                onclick="openVideo('https://www.youtube.com/watch?v=ZZHNms3g1Gw')" style="transition-delay: 0.2s;">
-                <div class="relative">
-                    <img src="https://img.youtube.com/vi/ZZHNms3g1Gw/maxresdefault.jpg"
-                        alt="Depoimento 2" class="w-full h-auto object-cover">
+                <div class="premium-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
+                    onclick="openVideo('https://www.youtube.com/watch?v=ZZHNms3g1Gw')" style="transition-delay: 0.2s;">
+                    <div class="relative">
+                        <img src="https://img.youtube.com/vi/ZZHNms3g1Gw/maxresdefault.jpg"
+                            alt="Depoimento 2" class="w-full h-auto object-cover">
 
-                    <div class="play-overlay absolute inset-0 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 3v18l14-9L6 3z"></path>
-                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 hover:bg-opacity-60 transition-all duration-300">
+                            <svg class="w-16 h-16 text-white bg-primary-orange rounded-full p-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 3v18l14-9L6 3z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card 3 -->
-            <div class="social-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
-                onclick="openVideo('https://www.youtube.com/watch?v=oTcazIOVaKc')" style="transition-delay: 0.3s;">
-                <div class="relative">
-                    <img src="https://img.youtube.com/vi/oTcazIOVaKc/maxresdefault.jpg"
-                        alt="Depoimento 3" class="w-full h-auto object-cover">
+                <div class="premium-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
+                    onclick="openVideo('https://www.youtube.com/watch?v=oTcazIOVaKc')" style="transition-delay: 0.3s;">
+                    <div class="relative">
+                        <img src="https://img.youtube.com/vi/oTcazIOVaKc/maxresdefault.jpg"
+                            alt="Depoimento 3" class="w-full h-auto object-cover">
 
-                    <div class="play-overlay absolute inset-0 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 3v18l14-9L6 3z"></path>
-                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 hover:bg-opacity-60 transition-all duration-300">
+                            <svg class="w-16 h-16 text-white bg-primary-orange rounded-full p-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 3v18l14-9L6 3z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card 4 -->
-            <div class="social-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
-                onclick="openVideo('https://www.youtube.com/watch?v=h-NoLxVxUuE')" style="transition-delay: 0.4s;">
-                <div class="relative">
-                    <img src="https://img.youtube.com/vi/h-NoLxVxUuE/maxresdefault.jpg"
-                        alt="Depoimento 4" class="w-full h-auto object-cover">
+                <div class="premium-card rounded-xl overflow-hidden cursor-pointer scroll-reveal"
+                    onclick="openVideo('https://www.youtube.com/watch?v=h-NoLxVxUuE')" style="transition-delay: 0.4s;">
+                    <div class="relative">
+                        <img src="https://img.youtube.com/vi/h-NoLxVxUuE/maxresdefault.jpg"
+                            alt="Depoimento 4" class="w-full h-auto object-cover">
 
-                    <div class="play-overlay absolute inset-0 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 3v18l14-9L6 3z"></path>
-                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 hover:bg-opacity-60 transition-all duration-300">
+                            <svg class="w-16 h-16 text-white bg-primary-orange rounded-full p-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 3v18l14-9L6 3z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-    <!-- ===================================================== -->
-    <!-- SEÇÃO OFERTA/VALOR (Botão 2/3) -->
-    <!-- ===================================================== -->
     <section class="py-16 md:py-24 bg-soft-dark border-b border-gray-800 px-4">
         <div class="container mx-auto max-w-4xl text-center scroll-reveal">
             <h2 class="text-3xl sm:text-4xl font-bold mb-4">
@@ -458,7 +684,6 @@
                 Este é o <strong class="text-secondary-orange">investimento mais inteligente</strong> que você fará no seu negócio Shopee. Acesso imediato a todo o conteúdo premium.
             </p>
 
-            <!-- Box de Preço -->
             <div class="bg-bg-dark p-8 rounded-2xl shadow-2xl border-4 border-primary-orange inline-block transform hover:scale-[1.02] transition duration-500">
                 <p class="text-lg uppercase text-gray-500 font-semibold tracking-wider">Investimento Total</p>
                 <p class="text-5xl sm:text-6xl font-black my-4 text-white">
@@ -467,48 +692,31 @@
                 <p class="text-2xl font-bold text-gray-300">
                     Ou R$ 147,00 à vista no Pix
                 </p>
-                <!-- Destaque de Urgência Sutil -->
                 <p class="text-sm text-secondary-orange mt-2 font-medium animate-pulse">
                     Vagas e bônus extras por tempo limitado!
                 </p>
             </div>
 
-            <!-- Botão de Compra (2/3) -->
             <a href="https://pay.cakto.com.br/5ftikw9_314865?affiliate=aHUMWqiw" target="_blank" class="inline-block w-full sm:w-auto py-5 px-16 mt-10 text-2xl font-black rounded-full btn-glass uppercase tracking-wider shadow-lg">
                 GARANTIR MINHA VAGA AGORA
             </a>
         </div>
     </section>
 
-    <!-- ===================================================== -->
-    <!-- RODAPÉ E CTA FINAL (Botão 3/3) -->
-    <!-- ===================================================== -->
-    <footer class="py-16 md:py-20 px-4 text-center">
-        <div class="container mx-auto max-w-6xl">
-            <!-- Logo Estilizada -->
-            <h3 class="text-4xl font-black mb-10 scroll-reveal">
-               </span> LUCRE</span> COM </span> A</span> <span class="shopee-logo-text">SHOPEE
-            </h3>
 
-            <!-- Botão de Compra (3/3) - Acessibilidade Final -->
-            <div class="max-w-md mx-auto mb-10 scroll-reveal" style="transition-delay: 0.1s;">
-                <a href="https://pay.cakto.com.br/5ftikw9_314865?affiliate=aHUMWqiw" target="_blank" class="inline-block w-full py-4 px-10 text-xl font-bold rounded-full btn-glass uppercase tracking-wider shadow-xl transform hover:scale-[1.01] transition duration-300">
-                    QUERO O ACESSO IMEDIATO
-                </a>
-            </div>
-
-            <!-- Copyright e Links -->
-            <div class="text-sm text-gray-500 mt-12 space-y-2 border-t border-gray-800 pt-8 scroll-reveal" style="transition-delay: 0.2s;">
-                <p>&copy; 2024 Lucre com Shopee. Todos os direitos reservados.</p>
-                <p>
-                    <a href="#" class="hover:text-primary-orange transition-colors">Termos de Uso</a> 
-                    <span class="mx-2">|</span> 
-                    <a href="#" class="hover:text-primary-orange transition-colors">Política de Privacidade</a>
-                </p>
-            
-            </div>
+           <footer class="bg-black py-6">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <div class="text-sm text-gray-500 space-y-2 border-t border-gray-800 pt-8 scroll-reveal" style="transition-delay: 0.2s;">
+            <p>&copy; 2024 Lucre com Shopee. Todos os direitos reservados.</p>
+            <p>
+                <a href="#" class="hover:text-primary-orange transition-colors">Termos de Uso</a>
+                <span class="mx-2">|</span>
+                <a href="#" class="hover:text-primary-orange transition-colors">Política de Privacidade</a>
+            </p>
         </div>
-    </footer>
+    </div>
+</footer>
+
 
 	
 </body>
